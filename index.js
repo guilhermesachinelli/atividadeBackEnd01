@@ -113,7 +113,10 @@ app.delete('/users/:id', async (req, res) => {
 app.put('/users/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { nome, email, idade, signo, datanascimento, sexo } = req.body;
+        const { nome, email, datanascimento, sexo } = req.body;
+        const dataNascimento = new Date(datanascimento);
+        const idade = calcularIdade(dataNascimento);
+        const signo = calcularsigno(dataNascimento.getMonth() + 1, dataNascimento.getDate());
         await pool.query('UPDATE users SET nome = $1, email = $2, idade = $3, signo = $4, datanascimento = $5, sexo = $6 WHERE id = $7', [nome, email, idade, signo, datanascimento, sexo, id]);
         res.status(200).send({ message: 'Usuário atualizado com sucesso' });
     } catch (error) {
